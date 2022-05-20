@@ -20,23 +20,22 @@ export interface IDatasetExampleComponentProps {
 export const DatasetExampleComponent = ({productsDataset, tasksDataset, formEntityName, formEntityId }:IDatasetExampleComponentProps ) : JSX.Element => {
       
 
-  
-
-  const columns = productsDataset.columns.sort((column1, column2) => column1.order - column2.order).map((column) => {
-    return {
-       name : column.displayName,
-       fieldName : column.name,
-       minWidth : column.visualSizeFactor, 
-       key: column.name     
-    }
-  } );
-
+  const [columns, setColumns] = React.useState([]);   
   const [items, setItems] = React.useState<any[]>([]);
   const [groups, setGroups] = React.useState<any[]>([]);
+
   React.useEffect(() => {
     if(productsDataset.loading){
       return;
     }
+    const columns = productsDataset.columns.sort((column1, column2) => column1.order - column2.order).map((column) => {
+      return {
+         name : column.displayName,
+         fieldName : column.name,
+         minWidth : column.visualSizeFactor, 
+         key: column.name     
+      }
+    } );
     const myItems = productsDataset.sortedRecordIds.map((id) => {                
           const entityIn = productsDataset.records[id];
           const attributes = productsDataset.columns.map((column) => {                     
@@ -133,9 +132,9 @@ export const DatasetExampleComponent = ({productsDataset, tasksDataset, formEnti
       <span>{item?.group?.tasks?.length > 0 ? `Actions for ${item.group.name}: ` : "---"}</span>
         {item?.group?.tasks.length>0 ? item.group.tasks.map((task : any) => {
           return (            
-            <ActionButton key={`task${task}`} datasetProducts={productsDataset} prodid={undefined} datasetTasks={tasksDataset} taskid={task}></ActionButton>
+            <ActionButton key={`task${task}`}  datasetTasks={tasksDataset} taskid={task}></ActionButton>
             )
-        }) : <ActionButton key={`taskNew`} datasetProducts={productsDataset} prodid={undefined} datasetTasks={tasksDataset} taskid={undefined}></ActionButton>
+        }) : <ActionButton key={`taskNew`}  datasetTasks={tasksDataset} taskid={undefined}></ActionButton>
       }
       </div>)
          

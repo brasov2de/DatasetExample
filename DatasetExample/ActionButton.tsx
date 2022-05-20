@@ -4,42 +4,31 @@ import { Icon } from '@fluentui/react/lib/Icon';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
-export interface IActionButtonProps{
-    datasetProducts: DataSet; 
-    prodid ?: string;
+export interface IActionButtonProps{       
     datasetTasks : DataSet;
     taskid ?: string;
 }
 
-export const ActionButton = ({datasetProducts, prodid , datasetTasks, taskid}:IActionButtonProps ) : JSX.Element => {
+export const ActionButton = ({ datasetTasks, taskid}:IActionButtonProps ) : JSX.Element => {
 
     const [command, setCommand] = React.useState<any>();
   
 
-    React.useEffect(()=>{
-        //if(taskid!=null){
-            (datasetTasks as any).retrieveRecordCommand(taskid ? [taskid] : []).then((commands:any)=>{       
-                const c = commands.find((c:any) => (c.commandId as string).startsWith( "AddNote!"));
-                if(c){
-                    setCommand(c);
-                
-                }
-               })
-        //}
-        /*else{
-            (datasetProducts as any).retrieveRecordCommand([prodid]).then((commands:any)=>{       
-            const c = commands.find((c:any) => (c.commandId as string).startsWith("AddNote!"));
+    React.useEffect(()=>{      
+        (datasetTasks as any).retrieveRecordCommand(taskid ? [taskid] : []).then((commands:any)=>{       
+            const c = commands.find((c:any) => (c.commandId as string).startsWith( "AddNote!"));
             if(c){
                 setCommand(c);
-               
+            
             }
             })
-        }*/
-    }, [taskid, prodid]);
+       
+    }, [taskid]);
 
     const title = taskid!=null ? (datasetTasks.records[taskid]?.getValue("diana_name") as string) : "";
  
     return  (
-<Icon title={title}  iconName="Page" onClick={command?.execute} style={{color: taskid==null ? "red": "black", cursor: "pointer"}}></Icon>
+    <Icon title={title}  iconName="Page" onClick={command?.execute} style={{color: taskid==null ? "red": "black", cursor: "pointer"}}>        
+    </Icon>
     );
 }

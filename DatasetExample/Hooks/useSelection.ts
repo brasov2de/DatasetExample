@@ -10,14 +10,7 @@ export const useSelection = (dataset: DataSet) => {
             const sel = selection.getSelection();
             const ids = sel.map((item :any) => item.key);
             dataset.setSelectedRecordIds(ids);
-            setSelectedCount(ids.length);
-          /*  if(ids.length>0){
-                const parentId= (dataset.records[ids[0]]?.getValue("diana_orderid") as ComponentFramework.EntityReference | undefined)?.id.guid;
-                if(parentId!=undefined){
-                    datasetParent.setSelectedRecordIds( [parentId]);
-                }
-                
-            }*/
+            setSelectedCount(ids.length);         
         }
     }));
 
