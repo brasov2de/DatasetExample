@@ -17,7 +17,7 @@ export interface IDatasetExampleComponentProps {
 }
 
 
-export const DatasetExampleComponent = ({productsDataset, tasksDataset, formEntityName, formEntityId }:IDatasetExampleComponentProps ) : JSX.Element => {
+export const DatasetExampleComponent = React.memo(({productsDataset, tasksDataset, formEntityName, formEntityId }:IDatasetExampleComponentProps ) : JSX.Element => {
       
 
   const [columns, setColumns] = React.useState([]);   
@@ -78,49 +78,9 @@ export const DatasetExampleComponent = ({productsDataset, tasksDataset, formEnti
         prev[prev.length-1].count = prev[prev.length-1].count+1
       }
       return prev;
-    }, []);
-   /* const myGroups = pro.sortedRecordIds.map((groupId) => {
-      const entityIn = datasetMain.records[groupId];
-      const attributes = datasetMain.columns.map((column) => {                     
-        return  { 
-          [column.name] :  entityIn.getFormattedValue(column.name)
-        }
-      });
-      const groupItems = myItems.filter((item) => item.parentId === groupId);
-      return Object.assign({
-        key: groupId,           
-        raw : entityIn, 
-        startIndex: myItems.findIndex((value, index) => value.parentId === groupId ),
-        count: groupItems.length,
-        name: entityIn.getFormattedValue("diana_name"),
-       // children :  groupItems,
-        level: 0
-      },
-      ...attributes);              
-    });      */
+    }, []);  
     setGroups(myGroups);
-  }, [items])
-
- /* React.useEffect(() => {
-     productsDataset.filtering.clearFilter();
-     if(formEntityId!=null){
-      productsDataset.filtering.setFilter({
-        filterOperator: 0, 
-        conditions: [
-          {attributeName: "diana_accountid", 
-          conditionOperator: 0, //equal
-          value : formEntityId ,
-          entityAliasName : "Opportunity"
-        }
-        ],
-        filters: [          
-        ]
-      });
-
-      productsDataset.paging.setPageSize(500);
-      productsDataset.refresh();
-    }
-  }, [formEntityName, formEntityId]);*/
+  }, [items]) 
 
   const {selection, selectedCount, onItemInvoked} = useSelection(productsDataset);
 
@@ -159,6 +119,6 @@ export const DatasetExampleComponent = ({productsDataset, tasksDataset, formEnti
     </DetailsList>
     </MarqueeSelection>
 );
-}
+})
 
 
