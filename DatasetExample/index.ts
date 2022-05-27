@@ -2,13 +2,11 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { DatasetExampleComponent, IDatasetExampleComponentProps } from "./DatasetExampleComponent";
 import * as React from "react";
-import { threadId } from "worker_threads";
 
 export class DatasetExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
     private notifyOutputChanged: () => void;
-    private entityName : string  | null = null;
-    private entityId : string |null = null;
+
 
     /**
      * Empty constructor.
@@ -27,28 +25,7 @@ export class DatasetExample implements ComponentFramework.ReactControl<IInputs, 
         notifyOutputChanged: () => void,
         state: ComponentFramework.Dictionary
     ): void {
-        this.notifyOutputChanged = notifyOutputChanged;
-        console.log(context.parameters.productsDataset.getTargetEntityType());
-        this.entityName = (context.mode as any).contextInfo.entityTypeName;
-        this.entityId = (context.mode as any).contextInfo.entityId;
-        context.parameters.productsDataset.linking.addLinkedEntity({name: "diana_order", from: "diana_orderid", to: "diana_orderid", linkType: "inner", alias: "Opportunity"});           
-        
-        if(this.entityId!=null){
-           context.parameters.productsDataset.filtering.setFilter({
-           filterOperator: 0, 
-           conditions: [
-             {attributeName: "diana_accountid", 
-             conditionOperator: 0, //equal
-             value : this.entityId ,
-             entityAliasName : "Opportunity"
-           }
-           ],
-           filters: [          
-           ]
-         });
-    }
-        context.parameters.productsDataset.paging.setPageSize(500);     
-        context.parameters.productsDataset.refresh();
+        this.notifyOutputChanged = notifyOutputChanged;      
     }
 
     /**
@@ -57,13 +34,8 @@ export class DatasetExample implements ComponentFramework.ReactControl<IInputs, 
      * @returns ReactElement root react element for the control
      */
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-        this.entityName = (context.mode as any).contextInfo.entityTypeName;
-        this.entityId = (context.mode as any).contextInfo.entityId;
-        const props: IDatasetExampleComponentProps = { 
-            productsDataset:context.parameters.productsDataset , 
-            tasksDataset: context.parameters.tasksDataset, 
-            formEntityName : this.entityName,
-            formEntityId : this.entityId 
+          const props: IDatasetExampleComponentProps = { 
+            dataset: context.parameters.dataset
         };
         return React.createElement(
             DatasetExampleComponent, props
