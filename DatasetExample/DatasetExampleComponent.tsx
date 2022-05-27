@@ -2,10 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { DetailsList, IDetailsGroupDividerProps, IDetailsGroupRenderProps } from "@fluentui/react/lib/DetailsList";
-import { useSelection } from './Hooks/useSelection';
-import { MarqueeSelection } from '@fluentui/react/lib/MarqueeSelection';
-import { ActionButton } from './ActionButton';
-import { IRenderFunction } from '@fluentui/utilities/lib/IRenderFunction';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
