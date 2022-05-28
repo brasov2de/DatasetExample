@@ -12,7 +12,7 @@ export interface IDatasetExampleComponentProps {
 
 export const DatasetExampleComponent = React.memo(({dataset }:IDatasetExampleComponentProps ) : JSX.Element => {
       
-  const [columns, setColumns] = React.useState([]);   
+  const [columns, setColumns] = React.useState<any[]>([]);   
   const [items, setItems] = React.useState<any[]>([]);  
 
   React.useEffect(() => {
@@ -24,6 +24,7 @@ export const DatasetExampleComponent = React.memo(({dataset }:IDatasetExampleCom
          key: column.name     
       }
     } );
+    setColumns(columns);
     const myItems = dataset.sortedRecordIds.map((id) => {                
           const entityIn = dataset.records[id];
           const attributes = dataset.columns.map((column) => {                     
