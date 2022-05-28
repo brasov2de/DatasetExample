@@ -6,16 +6,19 @@ import { DetailsList, IDetailsGroupDividerProps, IDetailsGroupRenderProps } from
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
 export interface IDatasetExampleComponentProps {
-  dataset: DataSet;  
+  dataset: DataSet;    
 }
 
 
 export const DatasetExampleComponent = React.memo(({dataset }:IDatasetExampleComponentProps ) : JSX.Element => {
       
-  const [columns, setColumns] = React.useState([]);   
+  const [columns, setColumns] = React.useState<any[]>([]);   
   const [items, setItems] = React.useState<any[]>([]);  
 
   React.useEffect(() => {
+    if(dataset.filtering.getFilter() == null || dataset.loading===true){
+      return;
+    }
     const columns = dataset.columns.sort((column1, column2) => column1.order - column2.order).map((column) => {
       return {
          name : column.displayName,
@@ -24,6 +27,7 @@ export const DatasetExampleComponent = React.memo(({dataset }:IDatasetExampleCom
          key: column.name     
       }
     } );
+    setColumns(columns);
     const myItems = dataset.sortedRecordIds.map((id) => {                
           const entityIn = dataset.records[id];
           const attributes = dataset.columns.map((column) => {                     
