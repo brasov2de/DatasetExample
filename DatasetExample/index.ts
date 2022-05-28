@@ -3,7 +3,7 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { DatasetExampleComponent, IDatasetExampleComponentProps } from "./DatasetExampleComponent";
 import * as React from "react";
 
-export class DatasetExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
+export class SimpleDatasetExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
     private notifyOutputChanged: () => void;
 
