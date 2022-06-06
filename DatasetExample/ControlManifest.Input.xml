@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="Dianamics" constructor="MultipleDatasetGroupedExample" version="0.0.1" display-name-key="SimpleDatasetExample4" description-key="DatasetExample4 description" control-type="virtual" >
+  <control namespace="Dianamics" constructor="MultipleDatasetManyToManyExample" version="0.0.1" display-name-key="SimpleDatasetExample5" description-key="DatasetExample5 description" control-type="virtual" >
     <!--external-service-usage node declares whether this 3rd party PCF control is using external service or not, if yes, this control will be considered as premium and please also add the external domain it is using.
     If it is not using any external service, please set the enabled="false" and DO NOT add any domain below. The "enabled" will be false by default.
     Example1:
@@ -24,6 +24,10 @@
     <data-set name="childDataset" display-name-key="ChildDataset" > 
       <property-set name="lookupId" display-name-key="Lookup to parent" description-key="Lookup To parent" of-type="Lookup.Simple" usage="bound" required="true" />      
     </data-set>
+    <data-set name="associatedDataset" display-name-key="AssociatedDataset" > 
+      <property-set name="associatedName" display-name-key="Column name from associated dataset" description-key="Column name from associated dataset" of-type="SingleLine.Text" usage="bound" required="true" />      
+    </data-set>
+    <property name="associatedDatasetRelationshipName" display-name-key="associatedDatasetRelationshipName" description-key="associatedDatasetRelationshipName" of-type="SingleLine.Text" usage="input" required="true" />
      
     <resources>
       <code path="index.ts" order="1"/>

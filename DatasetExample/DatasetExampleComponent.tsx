@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { DetailsList, IDetailsGroupDividerProps, IDetailsGroupRenderProps } from "@fluentui/react/lib/DetailsList";
+import { getgroups } from 'process';
 
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
@@ -10,14 +11,17 @@ export interface IDatasetExampleComponentProps {
   datasetName: string;
   childDataset : DataSet;
   childDatasetParentIdName : string;
+  associatedDataset : DataSet;
+  associatedDatasetName: string;  
+  associatedDatasetRelationName: string;
 }
 
 
-export const DatasetExampleComponent = React.memo(({dataset, datasetName, childDataset, childDatasetParentIdName }:IDatasetExampleComponentProps ) : JSX.Element => {
+export const DatasetExampleComponent = React.memo(({dataset, datasetName, childDataset, childDatasetParentIdName, associatedDataset, associatedDatasetName, associatedDatasetRelationName }:IDatasetExampleComponentProps ) : JSX.Element => {
       
   const [columns, setColumns] = React.useState<any[]>([]);   
   const [items, setItems] = React.useState<any[]>([]);  
-  const [groups, setGroups] = React.useState<any[]>([]);
+  const [groups, setGroups] = React.useState<any[]>([]);  
 
   React.useEffect(() => {
     if(dataset.loading===true){
@@ -39,7 +43,33 @@ export const DatasetExampleComponent = React.memo(({dataset, datasetName, childD
             ]
           });                      
      childDataset.refresh();       
-    }      
+    } 
+   
+    associatedDataset.linking.addLinkedEntity({
+       // name: "diana_diana_order_systemuser",
+      name: associatedDatasetRelationName,
+      from: associatedDataset.getTargetEntityType() +"id",
+      to: associatedDataset.getTargetEntityType()+"id",
+      alias: "associatedRelationship", 
+      linkType: "inner"
+    });
+
+   
+   (associatedDataset as any).addColumn("diana_orderid", "associatedRelationship");
+   
+    associatedDataset.filtering.setFilter({
+      filterOperator: 0,
+      conditions: [
+        {
+          attributeName: dataset.getTargetEntityType()+"id",
+          conditionOperator: 8, //in
+          value: dataset.sortedRecordIds, 
+          entityAliasName: "associatedRelationship"
+        }
+      ],
+      filters: []
+    });
+    associatedDataset.refresh();     
   },[dataset]);
 
   React.useEffect(() => {
@@ -77,11 +107,16 @@ export const DatasetExampleComponent = React.memo(({dataset, datasetName, childD
       setItems(myItems);
           
   }, [childDataset]);  
+ const isAssociatedId = (record : ComponentFramework.PropertyHelper.DataSetApi.EntityRecord, parentEntityType: string,  parentId: string ) => {
+    return (record.getValue(`associatedRelationship.${parentEntityType}id`) as any)?.id?.guid === parentId ||
+    (record.getValue(`associatedRelationship.${parentEntityType}id`) as any)?.guid === parentId
+ }
 
   React.useEffect(() => {
     if(childDataset.loading){
       return;
     }
+    const datasetTargetEntityType = dataset.getTargetEntityType();
     const myGroups = items.reduce((prev, current, currentIndex)=>{
       if(prev.length===0 || prev[prev.length-1].parentId!==current.parentId){
         prev.push({
@@ -91,6 +126,7 @@ export const DatasetExampleComponent = React.memo(({dataset, datasetName, childD
           count: 1,
           name: current.parentRecord.getFormattedValue(datasetName),
           parentId: current.parentId,
+          associatedRecordIds : associatedDataset.sortedRecordIds.filter((id)=> isAssociatedId(associatedDataset.records[id], datasetTargetEntityType, current.parentId)),
           level: 0
         })
       }
@@ -101,11 +137,32 @@ export const DatasetExampleComponent = React.memo(({dataset, datasetName, childD
     }, []);  
     setGroups(myGroups);
   }, [items]);
+
+  React.useEffect(() => {
+    const datasetTargetEntityType = dataset.getTargetEntityType();
+    setGroups( groups.map((group)=> {
+      return {                
+        ...group,
+        associatedRecordIds : associatedDataset.sortedRecordIds.filter((id)=>isAssociatedId(associatedDataset.records[id], datasetTargetEntityType, group.parentId))
+      };
+    }));
+  }, [associatedDataset])
+  
   
     const onItemInvoked = React.useCallback((item : any) : void => {      
       const record = childDataset.records[item.key];
       dataset.openDatasetItem(record.getNamedReference());
   }, [dataset]); 
+
+
+  const onRenderGroupFooter =  (item : any) :  any=> {    
+    return (
+    <div style={{textAlign:"right", backgroundColor: "#cecece", height: "30px" }}>    
+      <div>{item?.group?.associatedRecordIds.length}</div>      
+    </div>
+    )
+       
+} 
 
   return (   
     <DetailsList                    
@@ -114,7 +171,8 @@ export const DatasetExampleComponent = React.memo(({dataset, datasetName, childD
         groups={groups}
         setKey="set"
         groupProps={{
-          showEmptyGroups: true,    
+          showEmptyGroups: true,   
+          onRenderFooter: onRenderGroupFooter 
         }}
         onItemInvoked={onItemInvoked}            
       >

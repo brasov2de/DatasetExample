@@ -3,7 +3,7 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { DatasetExampleComponent, IDatasetExampleComponentProps } from "./DatasetExampleComponent";
 import * as React from "react";
 
-export class MultipleDatasetGroupedExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
+export class MultipleDatasetManyToManyExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
     private notifyOutputChanged: () => void;  
 
@@ -38,7 +38,10 @@ export class MultipleDatasetGroupedExample implements ComponentFramework.ReactCo
             dataset: context.parameters.dataset,
             datasetName: context.parameters.dataset.columns.find((column) => column.alias==="name")?.name || "diana_name",
             childDataset : context.parameters.childDataset, 
-            childDatasetParentIdName : context.parameters.childDataset.columns.find((column)=> column.alias==="lookupId")?.name || "diana_orderid"
+            childDatasetParentIdName : context.parameters.childDataset.columns.find((column)=> column.alias==="lookupId")?.name || "diana_orderid", 
+            associatedDataset : context.parameters.associatedDataset,
+            associatedDatasetName: context.parameters.associatedDataset.columns.find((column)=> column.alias==="associatedName")?.name || "fullname", 
+            associatedDatasetRelationName : context.parameters.associatedDatasetRelationshipName.raw || "associatedDatasetRelationName"
         };
         return React.createElement(
             DatasetExampleComponent, props
