@@ -65,7 +65,7 @@ export const DatasetExampleComponent = React.memo(({dataset, childDataset }:IDat
                   raw : entityIn,                  
               },
               ...attributes);
-          }).sort((a, b) => a.parentId < b.parentId ? -1 : a.parentId < b.parentId ? 1 : 0 );    
+          })
       setItems(myItems);
           
   }, [childDataset]);  
