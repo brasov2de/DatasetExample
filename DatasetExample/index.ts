@@ -3,7 +3,7 @@ import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { DatasetExampleComponent, IDatasetExampleComponentProps } from "./DatasetExampleComponent";
 import * as React from "react";
 
-export class MultipleDatasetExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
+export class MultipleDatasetGroupedExample implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
     private notifyOutputChanged: () => void;  
 
@@ -36,7 +36,9 @@ export class MultipleDatasetExample implements ComponentFramework.ReactControl<I
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
           const props: IDatasetExampleComponentProps = { 
             dataset: context.parameters.dataset,
-            childDataset : context.parameters.childDataset
+            datasetName: context.parameters.dataset.columns.find((column) => column.alias==="name")?.name || "diana_name",
+            childDataset : context.parameters.childDataset, 
+            childDatasetParentIdName : context.parameters.childDataset.columns.find((column)=> column.alias==="lookupId")?.name || "diana_orderid"
         };
         return React.createElement(
             DatasetExampleComponent, props
