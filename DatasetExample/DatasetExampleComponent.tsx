@@ -6,17 +6,38 @@ import { DetailsList, IDetailsGroupDividerProps, IDetailsGroupRenderProps } from
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
 export interface IDatasetExampleComponentProps {
-  dataset: DataSet;    
+  dataset: DataSet;
+  entityId ?: string;
+  parentLookupName ?: string | null;
 }
 
 
-export const DatasetExampleComponent = React.memo(({dataset }:IDatasetExampleComponentProps ) : JSX.Element => {
+export const DatasetExampleComponent = React.memo(({dataset,entityId, parentLookupName }:IDatasetExampleComponentProps ) : JSX.Element => {
       
   const [columns, setColumns] = React.useState<any[]>([]);   
   const [items, setItems] = React.useState<any[]>([]);  
 
+
+  React.useEffect(()=>{
+    if(entityId!=null && parentLookupName!=null){
+      dataset.filtering.setFilter({
+        filterOperator: 0,  
+        conditions: [
+          {
+            attributeName: parentLookupName, // "diana_accountid",
+            conditionOperator: 0, //equal
+            value: entityId,
+            entityAliasName: "ParentRelation"
+          }
+        ],
+        filters:[]
+      });
+      dataset.refresh();
+    }
+  }, [entityId]);
+
   React.useEffect(() => {
-    if(dataset.filtering.getFilter() == null || dataset.loading===true){
+    if((entityId==null || dataset.filtering.getFilter() == null || dataset.loading===true){
       return;
     }
     const columns = dataset.columns.sort((column1, column2) => column1.order - column2.order).map((column) => {
