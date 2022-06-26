@@ -21,7 +21,7 @@
     <data-set name="dataset" display-name-key="Dataset_Display_Key" cds-data-set-options="displayCommandBar:true;displayViewSelector:true;displayQuickFind:true"> 
       <property-set name="lookupId" display-name-key="Lookup to parent" description-key="Lookup To parent" of-type="Lookup.Simple" usage="bound" required="true" />      
     </data-set>
-    <property name="parentEntityName" display-name-key="parent attribute name" description-key="parent attribute name" of-type="SingleLine.Text" usage="input" required="true"  />
+    <property name="parentEntityName" display-name-key="parent entity name" description-key="parent entity name" of-type="SingleLine.Text" usage="input" required="true"  />
     <property name="parentLookupName" display-name-key="parent lookup to host entity" description-key="parent lookup to host entity" of-type="SingleLine.Text" usage="input" required="true"  />
     
     <resources>
