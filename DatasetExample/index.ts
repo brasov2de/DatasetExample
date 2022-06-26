@@ -27,34 +27,16 @@ export class SimpleDatasetExample implements ComponentFramework.ReactControl<IIn
     ): void {
         this.notifyOutputChanged = notifyOutputChanged;      
         
-        const entityId = (context.mode as any).contextInfo.entityId;
-        const entityName = (context.mode as any).contextInfo.entityTypeName;
-        const parentEntityName = context.parameters.parentEntityName?.raw;
-        const parentId = context.parameters.dataset.columns.find((col)=> col.alias==="lookupId");      
-        const parentLookupName = context.parameters.parentLookupName?.raw;  
-        if(parentId!=null && entityId!=null && parentEntityName && parentLookupName){
-            //context.parameters.dataset.linking.addLinkedEntity({name: "diana_order", from: "diana_orderid", to: "diana_orderid", linkType: "inner", alias: "Opportunity"});           
-            context.parameters.dataset.linking.addLinkedEntity({
-                name: parentEntityName, 
-                from: parentEntityName + "id", 
-                to: parentId?.name, 
-                linkType: "inner", 
-                alias: "ParentRelation"}
-            );           
-
-            context.parameters.dataset.filtering.setFilter({
-                filterOperator: 0, 
-                conditions: [
-                  {attributeName: parentLookupName,  //"diana_accountid", 
-                  conditionOperator: 0, //equal
-                  value : entityId ,
-                  entityAliasName : "ParentRelation"
-                }
-                ],
-                filters: [          
-                ]
-              });                      
-         context.parameters.dataset.refresh();       
+        const parentEntityName = context.parameters.parentEntityName.raw;
+        const parentId = context.parameters.dataset.columns.find((column) => column.alias==="lookupId");
+        if(parentEntityName!=null && parentId!=null){
+         context.parameters.dataset.linking.addLinkedEntity({
+            name: parentEntityName,
+            from : `${parentEntityName}id`,
+            to:  parentId?.name,
+            linkType: "inner",
+            alias: "ParentRelation"
+            })    
         }
             
         
@@ -67,7 +49,9 @@ export class SimpleDatasetExample implements ComponentFramework.ReactControl<IIn
      */
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
           const props: IDatasetExampleComponentProps = { 
-            dataset: context.parameters.dataset          
+            dataset: context.parameters.dataset,
+            entityId: (context as any).page.entityId,
+            parentLookupName: context.parameters.parentLookupName?.raw
         };
         return React.createElement(
             DatasetExampleComponent, props
