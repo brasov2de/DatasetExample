@@ -23,7 +23,8 @@ export const DatasetExampleComponent = React.memo(({dataset, childDataset }:IDat
    // const entityId = (context.mode as any).contextInfo.entityId;
    // const entityName = (context.mode as any).contextInfo.entityTypeName;    
     const parentId = childDataset.columns.find((col)=> col.alias==="lookupId");        
-    if(parentId!=null){           
+    if(parentId!=null){ 
+        childDataset.filtering.clearFilter();
         childDataset.filtering.setFilter({
             filterOperator: 0, 
             conditions: [
